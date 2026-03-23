@@ -1,0 +1,98 @@
+{% extends 'portfolio/admin/admin_base.html' %}
+
+{% block title %}{{ title }} | Portfolio Admin{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div class="p-8 border-b border-gray-100 dark:border-gray-700">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ title }}</h2>
+        <p class="text-gray-500 text-sm mt-1">Manage and update your {{ title|lower }} details below.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="p-8 space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for field in form %}
+            <div class="space-y-2 {% if field.field.widget.input_type == 'textarea' or 'ckeditor' in field.field.widget.attrs.class %}md:col-span-2{% endif %}">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="text-xs text-gray-400 mt-1">{{ field.help_text }}</p>
+                {% endif %}
+                {% if field.errors %}
+                <div class="text-xs text-red-500 mt-1">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if model_name == 'projects' and object.images.all %}
+        <div class="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-700">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Existing Images</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {% for img in object.images.all %}
+                <div class="relative group aspect-square rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                    <img src="{{ img.image.url }}" alt="Project Image" class="w-full h-full object-cover">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="pt-6 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-4">
+            <button type="reset" class="px-6 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
+                Reset
+            </button>
+            <button type="submit" class="px-8 py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Custom styles for form inputs -->
+<style>
+    input[type="text"], 
+    input[type="email"], 
+    input[type="url"], 
+    input[type="number"], 
+    input[type="password"],
+    select, 
+    textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        border-width: 1px;
+        background-color: #f9fafb;
+        border-color: #e5e7eb;
+        transition: all 0.2s;
+    }
+    .dark input[type="text"], 
+    .dark input[type="email"], 
+    .dark input[type="url"], 
+    .dark input[type="number"], 
+    .dark input[type="password"],
+    .dark select, 
+    .dark textarea {
+        background-color: #111827;
+        border-color: #374151;
+        color: white;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .dark input:focus, .dark select:focus, .dark textarea:focus {
+        background-color: #1f2937;
+    }
+</style>
+{% endblock %}
