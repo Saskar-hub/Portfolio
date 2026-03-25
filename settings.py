@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-@mgpn!!361l9va!vg4ckm34$yb8!ywiuaoj+9gdgbr_-3j^u@^
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'portfolio-5aqd.onrender.com',
+    'saskarraut.com.np',
     'localhost',
     '127.0.0.1',
 ]
