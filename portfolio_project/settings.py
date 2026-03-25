@@ -27,10 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'portfolio-5aqd.onrender.com',
+    'saskarraut.com.np',
+    'www.saskarraut.com.np',
     'localhost',
     '127.0.0.1',
 ]
-
 
 # Application definition
 
