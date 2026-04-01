@@ -1,80 +1,91 @@
 import os
 import django
+from django.utils import timezone
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'my_portfolio.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_project.settings')
 django.setup()
 
-from portfolio.models import Category, SkillCategory, About, Skill, Project, Experience, Education
+from portfolio.models import SiteSettings, HeroSection, About, Skill, Project, Experience, Testimonial
 
 def seed():
-    # 1. About
+    # 1. Site Settings
+    if not SiteSettings.objects.exists():
+        SiteSettings.objects.create(
+            website_title="My Portfolio",
+            meta_title="Professional Developer Portfolio",
+            meta_description="Welcome to my portfolio website.",
+            meta_keywords="developer, portfolio, django, python",
+            github_link="https://github.com/",
+            linkedin_link="https://linkedin.com/",
+            twitter_link="https://twitter.com/",
+        )
+        print("SiteSettings created.")
+
+    # 2. Hero Section
+    if not HeroSection.objects.exists():
+        HeroSection.objects.create(
+            title="Scale Your Future",
+            subtitle="Crafting high-performance digital experiences with cutting-edge technology. We turn your vision into scalable reality.",
+            badge_text="Available for Hire",
+            cta_primary_text="Get Started",
+            cta_primary_link="#contact",
+            cta_secondary_text="Learn More",
+            cta_secondary_link="#about",
+            trust_indicator_text="Trusted by 50+ clients worldwide"
+        )
+        print("HeroSection created.")
+
+    # 3. About Section
     if not About.objects.exists():
         About.objects.create(
-            name="John Doe",
-            title="Full Stack Developer",
-            tagline="Building modern web applications with passion and precision.",
-            bio="I am a professional full-stack developer with 5+ years of experience in Python, Django, and modern JavaScript. I love solving complex problems and building user-centric products.",
-            email="john@example.com",
-            location="San Francisco, CA",
-            github="https://github.com/",
-            linkedin="https://linkedin.com/",
-            twitter="https://twitter.com/",
+            title="About Me",
+            description="I am a professional developer with passion for building modern web applications.",
         )
         print("About created.")
 
-    # 2. Categories
-    web, _ = Category.objects.get_or_create(name="Web Development", slug="web-dev")
-    ai, _ = Category.objects.get_or_create(name="AI & ML", slug="ai-ml")
-    mobile, _ = Category.objects.get_or_create(name="Mobile Apps", slug="mobile-apps")
-    print("Categories created.")
-
-    # 3. Skill Categories
-    frontend, _ = SkillCategory.objects.get_or_create(name="Frontend")
-    backend, _ = SkillCategory.objects.get_or_create(name="Backend")
-    tools, _ = SkillCategory.objects.get_or_create(name="Tools & Others")
-    print("Skill Categories created.")
-
     # 4. Skills
-    Skill.objects.get_or_create(name="HTML5/CSS3", category=frontend, proficiency=95, icon_class="fab fa-html5")
-    Skill.objects.get_or_create(name="JavaScript", category=frontend, proficiency=90, icon_class="fab fa-js")
-    Skill.objects.get_or_create(name="React", category=frontend, proficiency=85, icon_class="fab fa-react")
-    
-    Skill.objects.get_or_create(name="Python", category=backend, proficiency=95, icon_class="fab fa-python")
-    Skill.objects.get_or_create(name="Django", category=backend, proficiency=90, icon_class="fas fa-server")
-    Skill.objects.get_or_create(name="PostgreSQL", category=backend, proficiency=80, icon_class="fas fa-database")
-    
-    Skill.objects.get_or_create(name="Git", category=tools, proficiency=90, icon_class="fab fa-git-alt")
-    Skill.objects.get_or_create(name="Docker", category=tools, proficiency=75, icon_class="fab fa-docker")
-    print("Skills created.")
+    if not Skill.objects.exists():
+        skills = [
+            ('Python', 'backend', 95, 'python'),
+            ('Django', 'backend', 90, 'django'),
+            ('React', 'frontend', 85, 'react'),
+            ('HTML5/CSS3', 'frontend', 95, 'html5'),
+            ('Docker', 'tools', 80, 'docker'),
+            ('Git', 'tools', 90, 'git'),
+        ]
+        for name, category, level, icon in skills:
+            Skill.objects.create(name=name, category=category, level=level, icon_name=icon)
+        print("Skills created.")
 
-    # 5. Experience
-    Experience.objects.get_or_create(
-        title="Senior Developer",
-        company="Tech Corp",
-        duration="Jan 2021 - Present",
-        description="Lead developer for the e-commerce platform. Managed a team of 5 developers and improved performance by 40%.",
-        is_current=True,
-        order=2
-    )
-    Experience.objects.get_or_create(
-        title="Full Stack Developer",
-        company="Startup Inc",
-        duration="Jun 2018 - Dec 2020",
-        description="Developed and maintained several client projects using Django and React.",
-        is_current=False,
-        order=1
-    )
-    print("Experience created.")
+    # 5. Projects
+    if not Project.objects.exists():
+        Project.objects.create(
+            title="E-commerce Platform",
+            description="A scalable e-commerce platform built with Django and React.",
+            technologies_used="Django, React, PostgreSQL",
+            is_featured=True,
+            category="Web Development"
+        )
+        print("Project created.")
 
-    # 6. Education
-    Education.objects.get_or_create(
-        degree="B.S. Computer Science",
-        institution="University of Technology",
-        duration="2014 - 2018",
-        description="Focused on software engineering and database management.",
-        order=1
-    )
-    print("Education created.")
+    # 6. Experience
+    if not Experience.objects.exists():
+        Experience.objects.create(
+            job_title="Senior Developer",
+            company_name="Tech Corp",
+            duration="Jan 2021 - Present",
+            description="Leading the development of modern web apps."
+        )
+        print("Experience created.")
+
+    # 7. Testimonials
+    if not Testimonial.objects.exists():
+        Testimonial.objects.create(
+            client_name="Jane Smith",
+            feedback="Excellent work! Highly recommended.",
+            rating=5
+        )
+        print("Testimonial created.")
 
 if __name__ == "__main__":
     seed()
