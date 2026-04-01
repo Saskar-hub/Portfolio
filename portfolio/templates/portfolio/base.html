@@ -4,88 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ about.name|default:"Developer Portfolio" }} | {{ about.title|default:"Full Stack Developer" }}</title>
-    <meta name="description" content="{{ about.tagline|default:'Welcome to my professional portfolio.' }}">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
-    {% block extra_css %}{% endblock %}
+
+    <!-- SEO Meta Tags -->
+    <title>{{ general_content.meta_title|default:"Full Stack Developer Portfolio | React & Django Expert" }}</title>
+    <meta name="description" content="{{ general_content.meta_description|default:'Professional Full Stack Developer specializing in React and Django. Building scalable, SEO-optimized, and responsive web applications.' }}">
+    <meta name="keywords" content="{{ general_content.meta_keywords|default:'Full Stack Developer, React Developer, Django Developer, Portfolio, Web Developer Nepal' }}">
+    <meta name="author" content="Your Name">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ general_content.meta_title|default:'Full Stack Developer Portfolio' }}">
+    <meta property="og:description" content="{{ general_content.meta_description|default:'Modern web applications built with React and Django' }}">
+    <meta property="og:type" content="website">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'portfolio/css/index.css' %}">
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="container">
-            <a href="{% url 'home' %}" class="logo">
-                <span class="logo-text">{{ about.name|default:"Portfolio" }}</span>
-            </a>
-            
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-                {% if user.is_authenticated %}
-                <li><a href="{% url 'dashboard' %}" class="nav-link admin-link">Dashboard</a></li>
-                {% endif %}
-                <li><button id="dark-mode-toggle" class="nav-link" style="background: none; border: none; cursor: pointer;"><i class="fas fa-moon"></i></button></li>
-            </ul>
-            
-            <div class="nav-toggle" id="nav-toggle">
-                <i class="fas fa-bars"></i>
+<body class="bg-white dark:bg-gray-900">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Portfolio
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">Home</a>
+                    <a href="#about" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">About</a>
+                    <a href="#projects" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">Projects</a>
+                    <a href="#skills" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">Skills</a>
+                    <a href="#experience" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">Experience</a>
+                    <a href="#contact" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">Contact</a>
+                    {% if user.is_authenticated and user.is_superuser %}
+                        <a href="{% url 'admin_dashboard' %}" class="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg font-medium">Admin</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
-
-    <main>
-        {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2>{{ about.name|default:"Portfolio" }}</h2>
-                    <p>{{ about.tagline|default:"Crafting digital experiences with passion and precision." }}</p>
-                </div>
-                <div class="footer-socials">
-                    {% if about.github %}<a href="{{ about.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
-                    {% if about.linkedin %}<a href="{{ about.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
-                    {% if about.twitter %}<a href="{{ about.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; {% now "Y" %} {{ about.name|default:"Portfolio" }}. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Back to top button -->
-    <a href="#home" class="back-to-top" id="back-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-
-    <!-- Custom JS -->
-    <script src="{% static 'js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+    {% block content %}
+    {% endblock %}
 </body>
 </html>

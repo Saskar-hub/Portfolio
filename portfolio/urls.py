@@ -1,37 +1,42 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from django.contrib.auth import views as auth_views
 from . import views
 
+router = DefaultRouter()
+router.register(r'settings', views.SiteSettingsViewSet)
+router.register(r'hero', views.HeroSectionViewSet)
+router.register(r'about', views.AboutViewSet)
+router.register(r'skills', views.SkillViewSet)
+router.register(r'projects', views.ProjectViewSet)
+router.register(r'blogs', views.BlogViewSet)
+router.register(r'contact', views.ContactMessageViewSet)
+router.register(r'testimonials', views.TestimonialViewSet)
+router.register(r'experience', views.ExperienceViewSet)
+
 urlpatterns = [
-    # Public Website
-    path('', views.home, name='home'),
-    path('contact/', views.contact_form, name='contact_form'),
+    path('', views.index, name='index'),
     
-    # Custom Admin Dashboard
-    path('admin-dashboard/', views.dashboard, name='dashboard'),
-    path('admin-dashboard/login/', views.admin_login, name='admin_login'),
-    path('admin-dashboard/logout/', views.admin_logout, name='admin_logout'),
+    # Custom Admin (Django Templates)
+    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('dashboard/hero/', views.admin_hero, name='admin_hero'),
+    path('dashboard/about/', views.admin_about, name='admin_about'),
+    path('dashboard/settings/', views.admin_settings, name='admin_settings'),
+    path('dashboard/list/<str:model_name>/', views.admin_list, name='admin_list'),
+    path('dashboard/add/<str:model_name>/', views.admin_add_item, name='admin_add_item'),
+    path('dashboard/edit/<str:model_name>/<int:pk>/', views.admin_edit_item, name='admin_edit_item'),
+    path('dashboard/delete/<str:model_name>/<int:pk>/', views.admin_delete_item, name='admin_delete_item'),
     
-    # CRUD for Projects
-    path('admin-dashboard/projects/', views.project_list, name='project_list'),
-    path('admin-dashboard/projects/add/', views.project_add, name='project_add'),
-    path('admin-dashboard/projects/<int:pk>/edit/', views.project_edit, name='project_edit'),
-    path('admin-dashboard/projects/<int:pk>/delete/', views.project_delete, name='project_delete'),
-    
-    # CRUD for Skills
-    path('admin-dashboard/skills/', views.skill_list, name='skill_list'),
-    path('admin-dashboard/skills/add/', views.skill_add, name='skill_add'),
-    path('admin-dashboard/skills/<int:pk>/edit/', views.skill_edit, name='skill_edit'),
-    path('admin-dashboard/skills/<int:pk>/delete/', views.skill_delete, name='skill_delete'),
-    
-    # Experience & Education
-    path('admin-dashboard/experience/', views.experience_list, name='experience_list'),
-    path('admin-dashboard/experience/add/', views.experience_add, name='experience_add'),
-    path('admin-dashboard/experience/<int:pk>/edit/', views.experience_edit, name='experience_edit'),
-    
-    # Messages
-    path('admin-dashboard/messages/', views.message_list, name='message_list'),
-    path('admin-dashboard/messages/<int:pk>/delete/', views.message_delete, name='message_delete'),
-    
-    # About section dynamic editing
-    path('admin-dashboard/about/', views.about_edit, name='about_edit'),
+    # Auth for Custom Admin
+    path('dashboard/login/', auth_views.LoginView.as_view(template_name='portfolio/admin/login.html'), name='login'),
+    path('dashboard/logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+
+    # API
+    path('api/', include(router.urls)),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -1,0 +1,133 @@
+{% extends 'portfolio/admin/admin_base.html' %}
+
+{% block title %}Dashboard | Portfolio Admin{% endblock %}
+
+{% block header %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Welcome back, {{ user.username }}. Here's what's happening with your portfolio.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{% url 'admin_add_item' model_name='projects' %}" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center gap-2">
+                <i class="fas fa-plus"></i> Add Project
+            </a>
+            <a href="{% url 'admin_add_item' model_name='blogs' %}" class="px-4 py-2 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors flex items-center gap-2">
+                <i class="fas fa-plus"></i> Add Blog
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-blue-500 p-3 rounded-xl text-white shadow-lg shadow-blue-500/20">
+                    <i class="fas fa-briefcase fa-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-full">
+                    Active
+                </span>
+            </div>
+            <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Projects</h3>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.projects }}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-purple-500 p-3 rounded-xl text-white shadow-lg shadow-purple-500/20">
+                    <i class="fas fa-pen fa-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-full">
+                    Published
+                </span>
+            </div>
+            <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Blogs</h3>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.blogs }}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-green-500 p-3 rounded-xl text-white shadow-lg shadow-green-500/20">
+                    <i class="fas fa-envelope fa-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                    {{ stats.unread_messages }} unread
+                </span>
+            </div>
+            <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">New Messages</h3>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.messages }}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-orange-500 p-3 rounded-xl text-white shadow-lg shadow-orange-500/20">
+                    <i class="fas fa-code fa-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-full">
+                    Mastery
+                </span>
+            </div>
+            <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Skills Listed</h3>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.skills }}</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <!-- Recent Messages -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fas fa-envelope text-blue-600"></i> Recent Messages
+                </h2>
+                <a href="{% url 'admin_list' model_name='messages' %}" class="text-sm text-blue-600 hover:underline">View All</a>
+            </div>
+            
+            <div class="space-y-6">
+                {% for message in recent_messages %}
+                <div class="flex gap-4 items-start pb-6 border-b border-gray-50 dark:border-gray-700 last:border-0 last:pb-0">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 shrink-0">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ message.name }} sent a message</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ message.timestamp|timesince }} ago</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs mt-1"></i>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-sm italic">No recent messages.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Recent Activities / Quick Links -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-rocket text-orange-600"></i> Quick Actions
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="{% url 'admin_hero' %}" class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700 hover:border-blue-500 transition-colors group">
+                    <i class="fas fa-pen-nib text-blue-600 mb-2"></i>
+                    <p class="text-sm font-medium">Edit Hero</p>
+                </a>
+                <a href="{% url 'admin_settings' %}" class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700 hover:border-blue-500 transition-colors group">
+                    <i class="fas fa-cog text-gray-600 mb-2"></i>
+                    <p class="text-sm font-medium">Settings</p>
+                </a>
+                <a href="{% url 'index' %}" target="_blank" class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700 hover:border-blue-500 transition-colors group">
+                    <i class="fas fa-external-link-alt text-green-600 mb-2"></i>
+                    <p class="text-sm font-medium">View Site</p>
+                </a>
+                <a href="/admin/" target="_blank" class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700 hover:border-blue-500 transition-colors group">
+                    <i class="fas fa-user-shield text-purple-600 mb-2"></i>
+                    <p class="text-sm font-medium">Django Admin</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
