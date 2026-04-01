@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ about.name|default:"Developer Portfolio" }} | {{ about.title|default:"Full Stack Developer" }}</title>
+    <meta name="description" content="{{ about.tagline|default:'Welcome to my professional portfolio.' }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">
+                <span class="logo-text">{{ about.name|default:"Portfolio" }}</span>
+            </a>
+            
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}" class="nav-link admin-link">Dashboard</a></li>
+                {% endif %}
+                <li><button id="dark-mode-toggle" class="nav-link" style="background: none; border: none; cursor: pointer;"><i class="fas fa-moon"></i></button></li>
+            </ul>
+            
+            <div class="nav-toggle" id="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>{{ about.name|default:"Portfolio" }}</h2>
+                    <p>{{ about.tagline|default:"Crafting digital experiences with passion and precision." }}</p>
+                </div>
+                <div class="footer-socials">
+                    {% if about.github %}<a href="{{ about.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                    {% if about.linkedin %}<a href="{{ about.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                    {% if about.twitter %}<a href="{{ about.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} {{ about.name|default:"Portfolio" }}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <a href="#home" class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

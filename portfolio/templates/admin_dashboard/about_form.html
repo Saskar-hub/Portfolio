@@ -1,0 +1,54 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block page_title %}Update About Me{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px; margin: 0 auto;">
+    <h2 style="font-size: 1.25rem; margin-bottom: 24px;">Edit Your Profile</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div class="form-column">
+                <h3 style="font-size: 1rem; margin-bottom: 20px; color: var(--primary-color);">Basic Information</h3>
+                {% for field in form %}
+                    {% if field.name in "name,title,tagline,bio,profile_picture,resume" %}
+                    <div class="form-group">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <p style="color: #ef4444; font-size: 0.85rem; margin-top: 5px;">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <div class="form-column">
+                <h3 style="font-size: 1rem; margin-bottom: 20px; color: var(--primary-color);">Contact & Social</h3>
+                {% for field in form %}
+                    {% if field.name not in "name,title,tagline,bio,profile_picture,resume" %}
+                    <div class="form-group">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <p style="color: #ef4444; font-size: 0.85rem; margin-top: 5px;">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+            <button type="submit" class="btn btn-primary" style="background-color: #6366f1;">
+                <i class="fas fa-save"></i> Save All Changes
+            </button>
+            <a href="{% url 'dashboard' %}" class="btn" style="background-color: var(--border-color); color: var(--text-dark);">
+                Back to Dashboard
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

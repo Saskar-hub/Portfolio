@@ -1,0 +1,313 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="container hero-container">
+        <div class="hero-content">
+            <span class="greeting">Hello, I'm</span>
+            <h1 class="hero-name">{{ about.name|default:"A Professional Developer" }}</h1>
+            <h2 class="hero-title">{{ about.title|default:"Full Stack Developer" }}</h2>
+            <p class="hero-tagline">{{ about.tagline|default:"I build robust, scalable, and user-friendly web applications." }}</p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">View Projects</a>
+                <a href="#contact" class="btn btn-outline">Hire Me</a>
+            </div>
+            <div class="hero-socials">
+                {% if about.github %}<a href="{{ about.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                {% if about.linkedin %}<a href="{{ about.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                {% if about.twitter %}<a href="{{ about.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+            </div>
+        </div>
+        <div class="hero-image">
+            {% if about.profile_picture %}
+                <img src="{{ about.profile_picture.url }}" alt="{{ about.name }}">
+            {% else %}
+                <div class="image-placeholder">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">About Me</h2>
+            <div class="section-line"></div>
+        </div>
+        
+        <div class="about-grid">
+            <div class="about-text">
+                <p>{{ about.bio|linebreaksbr|default:"I am a passionate developer with experience in building web applications." }}</p>
+                <div class="about-info">
+                    <div class="info-item">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">{{ about.name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ about.email }}</span>
+                    </div>
+                    {% if about.phone %}
+                    <div class="info-item">
+                        <span class="info-label">Phone:</span>
+                        <span class="info-value">{{ about.phone }}</span>
+                    </div>
+                    {% endif %}
+                    {% if about.location %}
+                    <div class="info-item">
+                        <span class="info-label">Location:</span>
+                        <span class="info-value">{{ about.location }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if about.resume %}
+                <a href="{{ about.resume.url }}" class="btn btn-primary" download>
+                    <i class="fas fa-download"></i> Download Resume
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="skills section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">My Skills</h2>
+            <div class="section-line"></div>
+        </div>
+        
+        <div class="skills-grid">
+            {% for skill_cat in skill_categories %}
+            <div class="skill-category">
+                <h3>{{ skill_cat.name }}</h3>
+                <div class="skills-list">
+                    {% for skill in skill_cat.skills.all %}
+                    <div class="skill-item">
+                        <div class="skill-info">
+                            <span class="skill-name">
+                                {% if skill.icon_class %}<i class="{{ skill.icon_class }}"></i> {% endif %}
+                                {{ skill.name }}
+                            </span>
+                            <span class="skill-percentage">{{ skill.proficiency }}%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: {{ skill.proficiency }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p>No skills added yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="projects section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Recent Projects</h2>
+            <div class="section-line"></div>
+        </div>
+        
+        <div class="project-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            {% for category in categories %}
+            <button class="filter-btn" data-filter="{{ category.slug }}">{{ category.name }}</button>
+            {% endfor %}
+        </div>
+        
+        <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card" data-category="{{ project.category.slug }}">
+                <div class="project-image">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    <div class="project-overlay">
+                        <div class="project-links">
+                            {% if project.github_link %}
+                            <a href="{{ project.github_link }}" target="_blank"><i class="fab fa-github"></i></a>
+                            {% endif %}
+                            {% if project.live_link %}
+                            <a href="{{ project.live_link }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.description|truncatewords:20 }}</p>
+                    <div class="project-tech">
+                        {% for tech in project.tech_stack.split %}
+                            <span class="tech-badge">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No projects added yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Experience & Education Section -->
+<section id="experience" class="experience section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Experience & Education</h2>
+            <div class="section-line"></div>
+        </div>
+        
+        <div class="timeline-grid">
+            <div class="timeline-column">
+                <h3 class="timeline-title"><i class="fas fa-briefcase"></i> Experience</h3>
+                <div class="timeline">
+                    {% for exp in experiences %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">{{ exp.duration }}</div>
+                        <div class="timeline-content">
+                            <h4>{{ exp.title }}</h4>
+                            <h5>{{ exp.company }}</h5>
+                            <p>{{ exp.description }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No experience added yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="timeline-column">
+                <h3 class="timeline-title"><i class="fas fa-graduation-cap"></i> Education</h3>
+                <div class="timeline">
+                    {% for edu in educations %}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">{{ edu.duration }}</div>
+                        <div class="timeline-content">
+                            <h4>{{ edu.degree }}</h4>
+                            <h5>{{ edu.institution }}</h5>
+                            <p>{{ edu.description }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No education added yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section (Optional) -->
+{% if testimonials %}
+<section id="testimonials" class="testimonials section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">What Clients Say</h2>
+            <div class="section-line"></div>
+        </div>
+        
+        <div class="testimonials-grid">
+            {% for t in testimonials %}
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <i class="fas fa-quote-left"></i>
+                    <p>{{ t.text }}</p>
+                </div>
+                <div class="testimonial-author">
+                    {% if t.image %}
+                    <img src="{{ t.image.url }}" alt="{{ t.name }}">
+                    {% endif %}
+                    <div class="author-info">
+                        <h4>{{ t.name }}</h4>
+                        <span>{{ t.role }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Contact Section -->
+<section id="contact" class="contact section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="section-line"></div>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <p>Feel free to reach out for collaborations or just a friendly hello!</p>
+                <div class="info-list">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>{{ about.email }}</p>
+                        </div>
+                    </div>
+                    {% if about.phone %}
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>{{ about.phone }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if about.location %}
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>{{ about.location }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="contact-socials">
+                    {% if about.github %}<a href="{{ about.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                    {% if about.linkedin %}<a href="{{ about.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                    {% if about.twitter %}<a href="{{ about.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                </div>
+            </div>
+            
+            <div class="contact-form-container">
+                <form action="{% url 'contact_form' %}" method="POST" class="contact-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ contact_form.name }}
+                        </div>
+                        <div class="form-group">
+                            {{ contact_form.email }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ contact_form.subject }}
+                    </div>
+                    <div class="form-group">
+                        {{ contact_form.message }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
